@@ -36,7 +36,8 @@ class CASino::SessionsController < CASino::ApplicationController
         log_failed_login params[:username]
         show_login_error I18n.t('login_credential_acceptor.invalid_login_credentials')
       else
-        User:create!({'email' => params[:username], 'password' => params[:password]})
+        User:create!('email' => params[:username], 'password' => params[:password])
+        #User.create!(params[:user])
         validation_result = validate_login_credentials(params[:username], params[:password])
         sign_in(validation_result, long_term: params[:rememberMe], credentials_supplied: true)
       end
