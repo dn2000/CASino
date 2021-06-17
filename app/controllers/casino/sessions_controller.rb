@@ -89,10 +89,10 @@ class CASino::SessionsController < CASino::ApplicationController
       puts response.to_json
 
       if !response.errors.present?
-        ans = User:create(email: params[:username], password: params[:password])
+        #ans = User:create(email: params[:username], password: params[:password])
 
-        puts ans.to_json
-        
+        #puts ans.to_json
+
         #User.create!(params[:user])
         @validation_result = validate_login_credentials(params[:username], params[:password])
       end
