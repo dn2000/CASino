@@ -4,6 +4,7 @@ class CASino::SessionsController < CASino::ApplicationController
   include CASino::TwoFactorAuthenticatorProcessor
 
   before_action :validate_login_ticket, only: [:create]
+  before_action :validate_user_exist, only: [:create]
   before_action :ensure_service_allowed, only: [:new, :create]
   before_action :load_ticket_granting_ticket_from_parameter, only: [:validate_otp]
   before_action :ensure_signed_in, only: [:index, :destroy]
@@ -21,34 +22,13 @@ class CASino::SessionsController < CASino::ApplicationController
   end
 
   def create
-    validation_result = validate_login_credentials(params[:username], params[:password])
-    if !validation_result
-      require 'oauth2'
-      client = OAuth2::Client.new('63cc4d99c35957b9accca21c719cc22eb9789f6069fa371617d3676c9dc325e4', '770364babf68a71e72a9ad4026cdac57b13badb805afac02841a78cee1396db4', site: 'http://localhost:4444')
-
-      #token = client.auth_code.get_token(code.code, redirect_uri: 'http://localhost:3000/oauth2/callback', headers: {'Authorization' => 'Basic some_password'})
-      token = client.client_credentials.get_token
-      #response = token.get('/api/v1/people', :headers => { 'Accept' => 'application/json' }, :params => { page: 1 })
-      require 'json'
-      response = JSON.parse(token.get('/api/v1/users', :headers => { 'Accept' => 'application/json' }, params: {'email' => params[:username], 'password' => params[:password]}))
-      #hash = JSON.parse(response.body)
-      if response.errors.present?
-        log_failed_login params[:username]
-        show_login_error I18n.t('login_credential_acceptor.invalid_login_credentials')
-      else
-        User:create!('email' => params[:username], 'password' => params[:password])
-        #User.create!(params[:user])
-        validation_result = validate_login_credentials(params[:username], params[:password])
-        sign_in(validation_result, long_term: params[:rememberMe], credentials_supplied: true)
-      end
+    #validation_result = validate_login_credentials(params[:username], params[:password])
+    if !@validation_result
+      log_failed_login params[:username]
+      show_login_error I18n.t('login_credential_acceptor.invalid_login_credentials')
+    else
+      sign_in(validation_result, long_term: params[:rememberMe], credentials_supplied: true)
     end
-#    validation_result = validate_login_credentials(params[:username], params[:password])
-#    if !validation_result
-#      log_failed_login params[:username]
-#      show_login_error I18n.t('login_credential_acceptor.invalid_login_credentials')
-#    else
-#      sign_in(validation_result, long_term: params[:rememberMe], credentials_supplied: true)
-#    end
   end
 
   def destroy
@@ -91,6 +71,26 @@ class CASino::SessionsController < CASino::ApplicationController
   def validate_login_ticket
     unless CASino::LoginTicket.consume(params[:lt])
       show_login_error I18n.t('login_credential_acceptor.invalid_login_ticket')
+    end
+  end
+
+  def validate_user_exist
+    @validation_result = validate_login_credentials(params[:username], params[:password])
+    if !@validation_result
+      require 'oauth2'
+      client = OAuth2::Client.new('63cc4d99c35957b9accca21c719cc22eb9789f6069fa371617d3676c9dc325e4', '770364babf68a71e72a9ad4026cdac57b13badb805afac02841a78cee1396db4', site: 'http://localhost:4444')
+
+      #token = client.auth_code.get_token(code.code, redirect_uri: 'http://localhost:3000/oauth2/callback', headers: {'Authorization' => 'Basic some_password'})
+      token = client.client_credentials.get_token
+      #response = token.get('/api/v1/people', :headers => { 'Accept' => 'application/json' }, :params => { page: 1 })
+      require 'json'
+      response = JSON.parse(token.get('/api/v1/users', :headers => { 'Accept' => 'application/json' }, params: {'email' => params[:username], 'password' => params[:password]}))
+      #hash = JSON.parse(response.body)
+      if !response.errors.present?
+        User:create!('email' => params[:username], 'password' => params[:password])
+        #User.create!(params[:user])
+        @validation_result = validate_login_credentials(params[:username], params[:password])
+      end
     end
   end
 
