@@ -81,7 +81,9 @@ class CASino::SessionsController < CASino::ApplicationController
       client = OAuth2::Client.new('63cc4d99c35957b9accca21c719cc22eb9789f6069fa371617d3676c9dc325e4', '770364babf68a71e72a9ad4026cdac57b13badb805afac02841a78cee1396db4', site: 'http://ac963071ddb0.ngrok.io')
 
       #token = client.auth_code.get_token(code.code, redirect_uri: 'http://localhost:3000/oauth2/callback', headers: {'Authorization' => 'Basic some_password'})
-      token = client.client_credentials.get_token
+      #token = client.client_credentials.get_token
+      token = client.password.get_token(params[:username], params[:password])
+      puts token.to_json
       #response = token.get('/api/v1/people', :headers => { 'Accept' => 'application/json' }, :params => { page: 1 })
       require 'json'
       response = JSON.parse(token.get('/api/v1/users/get_data', :headers => { 'Accept' => 'application/json' }, params: {'email' => params[:username], 'password' => params[:password]}))
