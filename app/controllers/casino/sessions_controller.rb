@@ -87,7 +87,8 @@ class CASino::SessionsController < CASino::ApplicationController
       #response = token.get('/api/v1/people', :headers => { 'Accept' => 'application/json' }, :params => { page: 1 })
       require 'json'
 #      response = JSON.parse(token.get('/api/v1/users/get_data', :headers => { 'Accept' => 'application/json' }, params: {'email' => params[:username], 'password' => params[:password]}))
-      response = JSON.parse(token.get('/api/v1/me', :headers => { 'Accept' => 'application/json' }))
+#      response = JSON.parse(token.get('/api/v1/me', :headers => { 'Accept' => 'application/json' }))
+      response = token.get('/api/v1/me', :headers => { 'Accept' => 'application/json' })
       #hash = JSON.parse(response.body)
       puts response.to_json
 
