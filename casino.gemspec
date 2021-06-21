@@ -44,4 +44,5 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'grape-entity', '~> 0.4'
   s.add_runtime_dependency 'rqrcode_png', '~> 0.1'
   s.add_runtime_dependency 'kaminari', '~> 0.16'
+  s.add_runtime_dependency 'dotenv'
 end

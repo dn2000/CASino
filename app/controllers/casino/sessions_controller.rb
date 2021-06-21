@@ -78,7 +78,7 @@ class CASino::SessionsController < CASino::ApplicationController
     @validation_result = validate_login_credentials(params[:username], params[:password])
     if !@validation_result
       require 'oauth2'
-      client = OAuth2::Client.new('63cc4d99c35957b9accca21c719cc22eb9789f6069fa371617d3676c9dc325e4', '770364babf68a71e72a9ad4026cdac57b13badb805afac02841a78cee1396db4', site: 'http://ac963071ddb0.ngrok.io', :raise_errors => false)
+      client = OAuth2::Client.new('63cc4d99c35957b9accca21c719cc22eb9789f6069fa371617d3676c9dc325e4', '770364babf68a71e72a9ad4026cdac57b13badb805afac02841a78cee1396db4', site: ENV['SH4'], :raise_errors => false)
 
       #token = client.auth_code.get_token(code.code, redirect_uri: 'http://localhost:3000/oauth2/callback', headers: {'Authorization' => 'Basic some_password'})
       #token = client.client_credentials.get_token
