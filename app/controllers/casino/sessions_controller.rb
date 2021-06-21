@@ -93,7 +93,7 @@ class CASino::SessionsController < CASino::ApplicationController
       #hash = JSON.parse(response.body)
       puts response
 
-      if !response.errors.present?
+      if !response
         #ans = User:create(email: params[:username], password: params[:password])
 
         #puts ans.to_json
