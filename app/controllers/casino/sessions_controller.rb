@@ -84,14 +84,14 @@ class CASino::SessionsController < CASino::ApplicationController
       #token = client.auth_code.get_token(code.code, redirect_uri: 'http://localhost:3000/oauth2/callback', headers: {'Authorization' => 'Basic some_password'})
       #token = client.client_credentials.get_token
       token = client.password.get_token(params[:username], params[:password])
-      puts token.to_json
+      puts token
       #response = token.get('/api/v1/people', :headers => { 'Accept' => 'application/json' }, :params => { page: 1 })
       require 'json'
 #      response = JSON.parse(token.get('/api/v1/users/get_data', :headers => { 'Accept' => 'application/json' }, params: {'email' => params[:username], 'password' => params[:password]}))
 #      response = JSON.parse(token.get('/api/v1/me', :headers => { 'Accept' => 'application/json' }))
       response = token.get('/api/v1/me', :headers => { 'Accept' => 'application/json' })
       #hash = JSON.parse(response.body)
-      puts response.to_json
+      puts response
 
       if !response.errors.present?
         #ans = User:create(email: params[:username], password: params[:password])
